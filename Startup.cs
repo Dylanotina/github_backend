@@ -48,7 +48,10 @@ namespace Github_backend
                 );
             });
             services.AddHangfireServer();
-            //services.AddCors();
+            services.AddCors( options => {
+                options.AddPolicy("AllowAll",
+                builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,7 +69,7 @@ namespace Github_backend
             app.UseAuthorization();
             app.UseHangfireDashboard();
 
-            //app.UseCors( builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors("AllowAll");
 
             app.UseEndpoints(endpoints =>
             {

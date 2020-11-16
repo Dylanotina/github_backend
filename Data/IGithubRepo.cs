@@ -9,7 +9,7 @@ namespace Github_backend.Data
         
 
          Task<IEnumerable<T>> GetAllProjects();
-        Task<T> getProjectById(int id);
+        Task<T> getProjectById(long id);
         Task CreateProject(T project);
         Task UpdateProject(T project);
         Task DeleteProject(T project);

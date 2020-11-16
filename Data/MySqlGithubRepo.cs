@@ -44,7 +44,7 @@ namespace Github_backend.Data
             return await _context.Projects.ToListAsync();
         }
 
-        public async Task<Project> getProjectById(int id)
+        public async Task<Project> getProjectById(long id)
         {
             return await _context.Projects.FindAsync(id);
         }

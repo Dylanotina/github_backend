@@ -15,6 +15,7 @@ using System.Linq;
 
 namespace Github_backend.Controllers 
 {
+    
     [Route("api/projects")]
     [ApiController]
     public class ProjectsController : ControllerBase 
@@ -34,17 +35,17 @@ namespace Github_backend.Controllers
        
 
         [HttpGet]
-        public ActionResult<IEnumerable<ProjectsReadDto>> GetAllProjects()
+        public async  Task<ActionResult<IEnumerable<ProjectsReadDto>>> GetAllProjects()
         {
-            return Ok(_mapper.Map<IEnumerable<ProjectsReadDto>>(_repository.GetAllProjects()));
+            return Ok(_mapper.Map<IEnumerable<ProjectsReadDto>>( await _repository.GetAllProjects()));
         }
 
         [HttpGet("{id}", Name="GetProjectById")]
-        public ActionResult<IEnumerable<ProjectsReadDto>> GetProjectById(int id) 
+        public async Task<ActionResult<ProjectsReadDto>> GetProjectById(long id) 
         {
             if (_repository.getProjectById(id) != null)
             {
-            return Ok(_mapper.Map<ProjectsReadDto>(_repository.getProjectById(id)));   
+            return Ok(_mapper.Map<ProjectsReadDto>( await _repository.getProjectById(id)));   
             }
             return NotFound();
         }
@@ -107,7 +108,7 @@ namespace Github_backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteProjectAsync(int id)
+        public ActionResult DeleteProjectAsync(long id)
         {
             var ProjectFromDatabase = _repository.getProjectById(id);
             if (ProjectFromDatabase == null)

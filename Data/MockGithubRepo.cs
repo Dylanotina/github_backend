@@ -37,7 +37,7 @@ namespace Github_backend.Data
             return Projects;
         }
 
-        public DataGithub getProjectById(int id)
+        public DataGithub getProjectById(long id)
         {
             return new DataGithub{id=1, name="Test",html_url="aaaa.com", description="ceci est un test", created_at="ecrire sur un qwerty est difficile"};
         }
@@ -75,7 +75,7 @@ namespace Github_backend.Data
 
      
 
-        Task<Project> IGithubRepo<Project>.getProjectById(int id)
+        Task<Project> IGithubRepo<Project>.getProjectById(long id)
         {
             throw new System.NotImplementedException();
         }
