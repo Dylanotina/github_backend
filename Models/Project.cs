@@ -16,6 +16,8 @@ namespace Github_backend.Models
     
         public string updated_at { get; set; }
 
+        public string homepage {get;set;}
+
         public string language { get; set; }
 
 

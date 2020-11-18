@@ -9,6 +9,7 @@ namespace Github_backend.Dtos
         public string html_url { get; set; }
 
         public string description { get; set; }
+        public string homepage {get;set;}
  
         public string  created_at { get; set; }
     

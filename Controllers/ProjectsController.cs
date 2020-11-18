@@ -26,7 +26,6 @@ namespace Github_backend.Controllers
 
         public ProjectsController(IGithubRepo<Project> repository, IMapper mapper)
         {
-            Console.WriteLine("Created Scheduler!");
             _repository = repository;
             _mapper = mapper;
             
