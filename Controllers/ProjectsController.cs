@@ -29,7 +29,7 @@ namespace Github_backend.Controllers
             _repository = repository;
             _mapper = mapper;
             
-            RecurringJob.AddOrUpdate(() => this.logFunct(), Cron.Hourly);
+            RecurringJob.AddOrUpdate(() => this.BackgroundPopulationDb(), Cron.Hourly);
         }
        
 
@@ -107,24 +107,23 @@ namespace Github_backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteProjectAsync(long id)
+        public async Task<ActionResult> DeleteProjectAsync(long id)
         {
-            var ProjectFromDatabase = _repository.getProjectById(id);
+            var ProjectFromDatabase = await _repository.getProjectById(id);
             if (ProjectFromDatabase == null)
             {
                 return NotFound();
             }
 
              var ProjectModel  = _mapper.Map<Project>(ProjectFromDatabase);
-              _repository.DeleteProject(ProjectModel);
+             await _repository.DeleteProject(ProjectModel);
             return NoContent();
         }
 
 
         
-        public async Task logFunct()
+        public async Task BackgroundPopulationDb()
         {
-            Console.WriteLine("Ceci est un test");
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
             try
