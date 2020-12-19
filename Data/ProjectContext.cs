@@ -10,11 +10,6 @@ namespace Github_backend.Data
         {
 
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseMySQL("server=localhost;database=projects;user=dylan;password=Didibasketnba17+");
-            base.OnConfiguring(optionsBuilder);
-        }
 
         public DbSet<Project> Projects { get; set; }
     }

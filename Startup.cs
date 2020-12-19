@@ -1,21 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Github_backend.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using Hangfire.MySql;
 using Hangfire;
 using Github_backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Github_backend
 {
@@ -31,7 +26,19 @@ namespace Github_backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ProjectContext>();
+
+            var server =  Configuration["DbServer"] ;
+            var port = Configuration["DbPort"];
+            var database = Configuration["DatabaseName"];
+            var user = Configuration["DbUser"];
+            var password = Configuration["DbPassword"];
+
+            System.Console.WriteLine($"server={server};port={port};database={database};user={user};password={password}");
+            services.AddDbContext<ProjectContext>( options => 
+            options.UseMySQL(
+                $"server={server};port={port};database={database};user={user};password={password}"
+            )
+            );
             services.AddControllers().AddNewtonsoftJson(s => {
                s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver(); 
             })
@@ -39,10 +46,14 @@ namespace Github_backend
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             
             services.AddScoped(typeof(IGithubRepo<Project>),typeof(MySqlGithubRepo));
+            
+            
+
+
              services.AddHangfire(config => {
                 config.UseStorage(
                     new MySqlStorage(
-                        "server=localhost;database=projects;user=dylan;password=Didibasketnba17+;Allow User Variables=True",
+                        $"server={server};port={port};database={database};user={user};password={password};Allow User Variables=True",
                         new MySqlStorageOptions { TablesPrefix = "Hangfire"}
                     )
                 );
@@ -70,12 +81,19 @@ namespace Github_backend
             app.UseHangfireDashboard();
 
             app.UseCors("AllowAll");
+     
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapHangfireDashboard();
             });
+
+        using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+    {
+        var context = serviceScope.ServiceProvider.GetRequiredService<ProjectContext>();
+        context.Database.Migrate();
+    }
         }
     }
 }

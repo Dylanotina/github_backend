@@ -10,7 +10,6 @@ using Hangfire;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Cors;
 using System.Linq;
 
 namespace Github_backend.Controllers 
